@@ -17,7 +17,7 @@ router.post("/register", (req, res) => {
 
   // Hash the password before storing it into the DB
   const saltRounds = 10; // Salt rounds to add unique text to the password
-  bcrypt.hash(password.toString(), saltRounds, (err, hash) => {
+  bcrypt.hash(password, saltRounds, (err, hash) => {
     if (err) return res.json({ Error: "Error in hashing password" });
     const values = [username, email, hash];
 
@@ -84,7 +84,7 @@ router.post("/profile", (req, res) => {
   }
 
   //Insert query
-  const sql = "INSERT INTO login (Age,Gender,DoB,Mobile) VALUES (?, ?, ?,?)";
+  const sql = "INSERT INTO userinfo(Age,Gender,DoB,Mobile) VALUES (?, ?, ?,?)";
 
   db.query(sql, [age, gender, dob, mobile], (err) => {
     if (err) {

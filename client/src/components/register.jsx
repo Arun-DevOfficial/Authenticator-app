@@ -28,18 +28,26 @@ const Register = () => {
     console.log(data);
 
     // Sending the data to the server
-    Axios.post("http://localhost:4040/register", data)
+    Axios.post("http://localhost:5050/register", data)
       .then((response) => {
         if (response.status === 200) {
           console.log("Successfully User registered.");
           toast.success("Successfully Registered");
           navigate("/profile");
-          // Navigate to profile
         } else {
-          alert("Error");
+          // Handle specific server-side errors
+          if (response.data && response.data.error) {
+            toast.error(response.data.error);
+          } else {
+            toast.error("An error occurred on the server.");
+          }
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        // Handle network errors
+        console.error(error);
+        toast.error("Network error. Please try again.");
+      });
   };
 
   return (

@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
+import Axios from "axios";
 import { FaArrowRightFromBracket } from "react-icons/fa6";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const Register = () => {
-  const [userData, setData] = useState({
+  const [data, setData] = useState({
     age: "",
     gender: "",
     dob: "",
@@ -14,31 +14,41 @@ const Register = () => {
   });
 
   //Navigator
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setData({
-      ...userData,
+      ...data,
       [name]: value,
     });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log(data);
+
     // Sending the data to the server
-    axios
-      .post("http://localhost:4040/profile", userData)
+    Axios.post("http://localhost:5050/register", data)
       .then((response) => {
-        if (response.status === 201) {
+        if (response.status === 200) {
           console.log("Successfully User registered.");
-          toast.success("Successfully Processed.."); // Notification
+          toast.success("Successfully Registered");
+          navigate("/profile");
+        } else {
+          // Handle specific server-side errors
+          if (response.data && response.data.error) {
+            toast.error(response.data.error);
+          } else {
+            toast.error("An error occurred on the server.");
+          }
         }
-        if (response.status === 400) {
-          return toast.error("Please Provide a Valid Data");
-        }
-        console.log(response.data);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        // Handle network errors
+        console.error(error);
+        toast.error("Network error. Please try again.");
+      });
   };
 
   return (
@@ -64,7 +74,7 @@ const Register = () => {
                 <input
                   type="text"
                   name="age"
-                  value={userData.age}
+                  value={data.age}
                   placeholder="Enter your age"
                   className="border px-4 py-2 rounded-lg capitalize focus:outline-none focus:border focus:border-gray-400"
                   onChange={handleChange}
@@ -78,7 +88,7 @@ const Register = () => {
                 </label>
                 <select
                   name="gender"
-                  value={userData.gender}
+                  value={data.gender}
                   className="focus:outline-none focus:border focus:border-gray-400 border px-4 py-2 rounded-lg"
                   onChange={handleChange}
                   required
@@ -97,7 +107,7 @@ const Register = () => {
                 <input
                   type="date"
                   name="dob"
-                  value={userData.dob}
+                  value={data.dob}
                   placeholder="Enter your Date Of Birth"
                   className="border px-4 py-2 rounded-lg capitalize focus:outline-none focus:border focus:border-gray-400"
                   onChange={handleChange}
@@ -115,7 +125,7 @@ const Register = () => {
                   placeholder="Mobile no / Phone"
                   className="border px-4 py-2 rounded-lg capitalize focus:outline-none focus:border focus:border-gray-400"
                   onChange={handleChange}
-                  value={userData.confirm}
+                  value={data.confirm}
                   required
                   autoComplete="false"
                 />
