@@ -28,7 +28,7 @@ const Login = () => {
     console.log(data);
 
     // Sending the data to the server
-    Axios.post("http://localhost:5050/login", data)
+    Axios.post("http://localhost:10000/login", data)
       .then((response) => {
         if (response.status === 200) {
           // Login successful

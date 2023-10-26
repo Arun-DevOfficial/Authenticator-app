@@ -29,7 +29,7 @@ const Register = () => {
     console.log(data);
 
     // Sending the data to the server
-    Axios.post("http://localhost:5050/register", data)
+    Axios.post("http://localhost:10000/profile", data)
       .then((response) => {
         if (response.status === 200) {
           console.log("Successfully User registered.");
